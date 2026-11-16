@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joe</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #05070a;
+      background-image: linear-gradient(to bottom, rgba(5, 7, 10, 0.3), rgba(5, 7, 10, 0.6)), url('assets/bg.jpg');
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      color: #ededef;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3.5rem 1.5rem;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.25rem;
+      animation: gentle-drift 6s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.9);
+    }
+
+    .handle {
+      color: #a0a6b5;
+      font-size: 1rem;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+    }
+
+    .photo-stage {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin: 2rem 0;
+    }
+
+    .photo {
+      max-width: 320px;
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 6px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+      animation: photo-float 6.5s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .link-item {
+      display: inline-block;
+      animation: link-drift 4.5s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .link-item:nth-child(1) { animation-delay: 0.0s; animation-duration: 4.8s; }
+    .link-item:nth-child(2) { animation-delay: -1.2s; animation-duration: 5.2s; }
+    .link-item:nth-child(3) { animation-delay: -2.4s; animation-duration: 4.6s; }
+    .link-item:nth-child(4) { animation-delay: -3.6s; animation-duration: 5.0s; }
+
+    a {
+      color: #d8dbe2;
+      text-decoration: none;
+      font-size: 1.05rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+      transition: color 0.15s ease, transform 0.15s ease;
+      display: inline-block;
+    }
+
+    a:hover {
+      color: #ffffff;
+      text-decoration: underline;
+      transform: translateY(-2px);
+    }
+
+    .audio-widget {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      z-index: 50;
+      animation: gentle-drift 5s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .mute-btn {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      color: #b5bac5;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 0.4rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+      transition: all 0.2s ease;
+    }
+
+    .mute-btn:hover {
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.35);
+      background: rgba(0, 0, 0, 0.65);
+    }
+
+    .track-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      color: #8b92a3;
+      font-size: 12px;
+      padding: 0.4rem 0.65rem;
+      border-radius: 4px;
+      user-select: none;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+    }
+
+    .wave-bars {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 10px;
+    }
+
+    .wave-bars i {
+      display: inline-block;
+      width: 2px;
+      height: 3px;
+      background: #8b92a3;
+      border-radius: 1px;
+      transition: background-color 0.2s ease;
+    }
+
+    .wave-bars.active i {
+      background: #4ade80;
+      animation: wave-pulse 0.7s ease-in-out infinite alternate;
+    }
+
+    .wave-bars.active i:nth-child(1) { animation-delay: 0.1s; }
+    .wave-bars.active i:nth-child(2) { animation-delay: 0.35s; }
+    .wave-bars.active i:nth-child(3) { animation-delay: 0.2s; }
+
+    @keyframes wave-pulse {
+      0% { height: 2px; }
+      100% { height: 10px; }
+    }
+
+    @keyframes photo-float {
+      0%, 100% {
+        transform: translate3d(0, 0, 0);
+      }
+      50% {
+        transform: translate3d(0, -6px, 0);
+      }
+    }
+
+    @keyframes gentle-drift {
+      0%, 100% {
+        transform: translate3d(0, 0, 0);
+      }
+      50% {
+        transform: translate3d(0, -3px, 0);
+      }
+    }
+
+    @keyframes link-drift {
+      0%, 100% {
+        transform: translate3d(0, 0, 0);
+      }
+      50% {
+        transform: translate3d(0, -5px, 0);
+      }
+    }
+
+    @media (max-width: 540px) {
+      .links {
+        gap: 1.5rem;
+      }
+      .photo {
+        max-width: 270px;
+      }
+      .audio-widget {
+        bottom: 16px;
+        left: 16px;
+      }
+      .track-meta {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">Joe</div>
+    <div class="handle">@asteroid3946</div>
+  </div>
+
+  <div class="photo-stage">
+    <img src="assets/photo.jpg" alt="nothing is that serious. choose peace" class="photo">
+  </div>
+
+  <div class="links">
+    <div class="link-item"><a href="https://github.com/asteroid3948" target="_blank" rel="noopener noreferrer">github</a></div>
+    <div class="link-item"><a href="https://steamcommunity.com/profiles/76561199522362362/" target="_blank" rel="noopener noreferrer">steam</a></div>
+    <div class="link-item"><a href="https://open.spotify.com/user/l3zehnb199lnpi5rgm6bhmz7t?si=05fa562fd7804e8b" target="_blank" rel="noopener noreferrer">spotify</a></div>
+    <div class="link-item"><a href="https://discord.com/users/1031286517949268062" target="_blank" rel="noopener noreferrer">discord</a></div>
+  </div>
+
+  <div class="audio-widget">
+    <button class="mute-btn" id="muteBtn" aria-label="Toggle background audio">
+      <span id="muteLabel">[ sound: on ]</span>
+    </button>
+    <div class="track-meta">
+      <span class="wave-bars active" id="waveBars">
+        <i></i><i></i><i></i>
+      </span>
+      <span>sister nancy - bam bam</span>
+    </div>
+  </div>
+
+  <audio id="bgAudio" loop preload="auto">
+    <source src="assets/bambam_full.webm" type="audio/webm">
+    <source src="assets/bambam_full.m4a" type="audio/mp4">
+  </audio>
+
+  <script>
+    const audio = document.getElementById('bgAudio');
+    const muteBtn = document.getElementById('muteBtn');
+    const muteLabel = document.getElementById('muteLabel');
+    const waveBars = document.getElementById('waveBars');
+
+    audio.volume = 0.22;
+
+    function setPlayingUI() {
+      muteLabel.textContent = '[ sound: on ]';
+      waveBars.classList.add('active');
+    }
+
+    function setPausedUI() {
+      muteLabel.textContent = '[ sound: off ]';
+      waveBars.classList.remove('active');
+    }
+
+    audio.play().then(() => {
+      setPlayingUI();
+    }).catch(() => {
+      setPausedUI();
+      const playOnFirstTouch = () => {
+        audio.play().then(() => {
+          setPlayingUI();
+        }).catch(() => {});
+        window.removeEventListener('click', playOnFirstTouch);
+        window.removeEventListener('keydown', playOnFirstTouch);
+      };
+      window.addEventListener('click', playOnFirstTouch);
+      window.addEventListener('keydown', playOnFirstTouch);
+    });
+
+    muteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (audio.paused) {
+        audio.play().then(() => {
+          setPlayingUI();
+        }).catch(() => {});
+      } else {
+        audio.pause();
+        setPausedUI();
+      }
+    });
+  </script>
+</body>
+</html>
